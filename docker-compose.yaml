@@ -1,0 +1,58 @@
+version: '3'
+services:
+    chariot-cloud:
+        build: ./ml-mdb-api
+        ports:
+            - "5000:8080"
+        networks: 
+            - ml
+   
+    swagger:
+        image: "swaggerapi/swagger-ui"
+        networks: 
+            - ml
+        ports:
+            - "4400:8080"
+        environment: 
+            BASE_URL: /swagger 
+            SWAGGER_JSON: /swagger.json
+            VIRTUAL_HOST: ml.swagger
+            VIRTUAL_PORT: 4400
+        volumes:
+            - ./swagger/mlcloud.json:/swagger.json        
+    
+    mongo:
+        image: mongo
+        networks:
+            - ml
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mldb
+            MONGO_INITDB_ROOT_PASSWORD: chariot
+        volumes:
+            - ./db:/data/db
+        ports:
+            - "27017:27017"
+        restart: always
+
+
+                            
+    proxy:
+        image: jwilder/nginx-proxy
+        networks:
+        - ml
+        ports:
+            - "80:80"
+        volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
+
+    # whoami:
+    #     image: jwilder/whoami
+    #     environment:
+    #         - VIRTUAL_HOST=whoami.local
+    #     networks:
+    #     - ml
+                    
+networks:
+    ml:
+              

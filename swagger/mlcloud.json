@@ -1,0 +1,615 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "APIs for accessing and modifying MongoDB and KMS Cloud Databases",
+    "version" : "1.0",
+    "title" : "ML API",
+    "contact" : {
+      "email" : "Shreyas.Gokhale@gt-arc.com"
+    }
+  },
+  "host" : "http://localhost:5000",
+  "basePath" : "/cloud",
+  "tags" : [ {
+    "name" : "MLAPI",
+    "description" : "Machine learning API which can be applied to applications such as Predictive Maintainance"
+  }, {
+    "name" : "KMS",
+    "description" : "KMS Operations API"
+  } ],
+  "schemes" : [ "http" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/db/kms/copyCSVToMLDB" : {
+      "post" : {
+        "tags" : [ "MLDB" ],
+        "summary" : "Copies a device data (stored in a CSV) to a database under MLDB",
+        "description" : "Copies a device data (stored in a CSV) to a database under MLDB. Follow the README file for an example predictive maintenance application on a servo motor. We saved the servo motor data under /ml-mdb-api/app-docker/datafiles/real_motor_data_0320.csv. The columns of the data are the properties as given below. Database name is provided by the requester and saved that way. Later during training and prediction, the requester should know this database name created! The table name is automatically assigned according to the data tags saved.",
+        "operationId" : "copy_csv_to_mldb",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/CopyCSVToMLDBRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : { },
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/db/writeOneRowInTable" : {
+      "post" : {
+        "tags" : [ "MLDB" ],
+        "summary" : "Writes one row in a table under ML DB",
+        "description" : "Add One Row (Document) in table",
+        "operationId" : "write_one_row_in_table",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/WriteOneRowInTableRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : { },
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/db/getTableData" : {
+      "get" : {
+        "tags" : [ "MLDB" ],
+        "summary" : "Gets a table data under ML DB",
+        "description" : "Gets data from a table / collection. Returns data if found. Otherwise, returns an error",
+        "operationId" : "get_table_data",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "name" : "Content_Type",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : { },
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/db/getTableDataByID" : {
+      "get" : {
+        "tags" : [ "MLDB" ],
+        "summary" : "Gets a table data by table ID under ML DB",
+        "description" : "Gets data from a table / collection. By ID. Returns data if found, otherwise, none.",
+        "operationId" : "get_table_data_by_id",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "name" : "Content_Type",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : { },
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/db/getLatestData" : {
+      "get" : {
+        "tags" : [ "MLDB" ],
+        "summary" : "Gets the lates data in a table under ML DB",
+        "description" : "Gets latest data in the table",
+        "operationId" : "get_latest_data",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "name" : "Content_Type",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : { },
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/db/deleteTable" : {
+      "post" : {
+        "tags" : [ "MLDB" ],
+        "summary" : "Deletes a table under ML DB",
+        "description" : "Deletes a table under ML DB",
+        "operationId" : "delete_table",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/DeleteTableRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : { },
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/db/copyCSVInTable" : {
+      "post" : {
+        "tags" : [ "MLDB" ],
+        "summary" : "Copies a CSV file with data as a table in ML DB",
+        "description" : "Copies a CSV file with data as a table in ML DB",
+        "operationId" : "copy_csv_in_table",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/CopyCSVInTableRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : { },
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/db/updateOneInTable" : {
+      "post" : {
+        "tags" : [ "MLDB" ],
+        "summary" : "Updates a raw in a table under ML DB",
+        "description" : "Updates a raw in a table under ML DB",
+        "operationId" : "update_one_in_table",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/UpdateOneInTableRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : { },
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/ml/generic/train" : {
+      "post" : {
+        "tags" : [ "MLAPI" ],
+        "summary" : "Trains a model for a specified data under a database in MLDB",
+        "description" : "Generic ML Training: Train and save Machine Learning model and related intermediate variables to local mongo database stated by the requester.Note that the Database id should match with the database ID of the previously stored device raw data \n",
+        "operationId" : "GenericTrain",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Content-Type",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "Body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/GenericTrainRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "headers" : { }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/ml/generic/predict" : {
+      "post" : {
+        "tags" : [ "MLAPI" ],
+        "summary" : "Predicts/classifies a given data run on a saved model",
+        "description" : "Generic ML Predict: Predict results of given data according to the model created under the corresponding database (previously created by the user) with device ID. Model ID can be defined optionally to select which training model (if multiple instances) to use. If not provided, the latest one is picked by default. Resulttable name can also be optionally provided. \n",
+        "operationId" : "GenericPredict",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Content-Type",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "Body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/GenericPredictRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "headers" : { }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/ml/generic/plot" : {
+      "post" : {
+        "tags" : [ "MLAPI" ],
+        "summary" : "Plots data distribution in a database saved under MLDB",
+        "description" : "Generic ML Plot: Plot data from the database.\n",
+        "operationId" : "GenericPlot",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Content-Type",
+          "in" : "header",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "Body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/GenericPlotRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "headers" : { }
+          }
+        },
+        "deprecated" : false
+      }
+    }
+  },
+  "definitions" : {
+    "WriteOneRowInTableRequest" : {
+      "type" : "object",
+      "required" : [ "data", "database", "table" ],
+      "properties" : {
+        "table" : {
+          "type" : "string"
+        },
+        "database" : {
+          "type" : "string"
+        },
+        "data" : {
+          "$ref" : "#/definitions/Data"
+        }
+      },
+      "title" : "WriteOneRowInTableRequest",
+      "example" : {
+        "table" : "GenericData",
+        "database" : "ChariotCloud",
+        "data" : {
+          "deviceID" : 0,
+          "torque" : 0,
+          "speed" : 34.2325,
+          "dist" : 1.1515
+        }
+      }
+    },
+    "Data" : {
+      "type" : "object",
+      "required" : [ "deviceID", "dist", "speed", "torque" ],
+      "properties" : {
+        "deviceID" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "torque" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "speed" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "dist" : {
+          "type" : "number",
+          "format" : "double"
+        }
+      },
+      "title" : "Data",
+      "example" : {
+        "deviceID" : 0,
+        "torque" : 0,
+        "speed" : 34.2325,
+        "dist" : 1.1515
+      }
+    },
+    "DeleteTableRequest" : {
+      "type" : "object",
+      "required" : [ "database", "table" ],
+      "properties" : {
+        "table" : {
+          "type" : "string"
+        },
+        "database" : {
+          "type" : "string"
+        }
+      },
+      "title" : "DeleteTableRequest",
+      "example" : {
+        "table" : "GenericData",
+        "database" : "ChariotCloud"
+      }
+    },
+    "CopyCSVInTableRequest" : {
+      "type" : "object",
+      "required" : [ "path", "table" ],
+      "properties" : {
+        "table" : {
+          "type" : "string"
+        },
+        "path" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CopyCSVInTableRequest",
+      "example" : {
+        "table" : "GenericData",
+        "path" : "/app/datafiles/real_motor_data_0320.csv"
+      }
+    },
+    "CopyCSVToMLDBRequest" : {
+      "type" : "object",
+      "required" : [ "properties", "deviceID", "path"],
+      "properties" : {
+        "deviceID" : {
+          "type" : "string",
+        },
+        "properties" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "path" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CopyCSVToMLDBRequest",
+      "example" : {
+        "deviceID": "c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "properties" : [ "velocity", "power_in"  ],
+        "database" : ["predictive_maintenance"],
+        "path": "/app/datafiles/real_motor_data_0320.csv"
+      }
+    },
+    "UpdateOneInTableRequest" : {
+      "type" : "object",
+      "required" : [ "database", "key", "table", "value" ],
+      "properties" : {
+        "table" : {
+          "type" : "string"
+        },
+        "database" : {
+          "type" : "string"
+        },
+        "key" : {
+          "$ref" : "#/definitions/Key"
+        },
+        "value" : {
+          "$ref" : "#/definitions/Value"
+        }
+      },
+      "title" : "UpdateOneInTableRequest",
+      "example" : {
+        "table" : "OCSVM_model_0",
+        "database" : "ChariotCloud",
+        "key" : {
+          "algorithm" : "OCSVM"
+        },
+        "value" : {
+          "table" : "NewTable"
+        }
+      }
+    },
+    "Key" : {
+      "type" : "object",
+      "required" : [ "algorithm" ],
+      "properties" : {
+        "algorithm" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Key",
+      "example" : {
+        "algorithm" : "OCSVM"
+      }
+    },
+    "Value" : {
+      "type" : "object",
+      "required" : [ "table" ],
+      "properties" : {
+        "table" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Value",
+      "example" : {
+        "table" : "NewTable"
+      }
+    },
+    "GenericTrainRequest" : {
+      "type" : "object",
+      "required" : [ "algorithm", "properties", "database", "deviceID", "para" ],
+      "properties" : {
+        "algorithm" : {
+          "type" : "string"
+        },
+        "deviceID" : {
+          "type" : "string"
+        },
+        "para" : {
+          "type" : "array",
+          "items" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        },
+        "properties" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "database" : {
+          "type" : "string"
+        }
+      },
+      "title" : "GenericTrainRequest",
+      "example" : {
+        "algorithm" : "OCSVM",
+        "deviceID" : "c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "para" : [ 0.01, 0.5 ],
+        "properties" : [ "velocity", "power_in" ],
+        "database" : "predictive_maintenance"
+      }
+    },
+    "GenericPredictRequest" : {
+      "type" : "object",
+      "required" : [ "algorithm", "properties", "database", "deviceID", "input", "para" ],
+      "properties" : {
+        "algorithm" : {
+          "type" : "string"
+        },
+        "deviceID" : {
+          "type" : "string"
+        },
+        "properties" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "input" : {
+          "type" : "array",
+          "items" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        },
+        "para" : {
+          "type" : "array",
+          "items" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        },
+        "database" : {
+          "type" : "string"
+        }
+      },
+      "title" : "GenericPredictRequest",
+      "example" : {
+        "algorithm" : "OCSVM",
+        "deviceID" : "c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "properties" : [ "velocity", "power_in" ],
+        "input" : [ 31, 5 ],
+        "para" : [ 0.01, 0.5 ],
+        "database" : "predictive_maintenance"
+      }
+    },
+    "GenericPlotRequest" : {
+      "type" : "object",
+      "required" : [ "properties", "database", "deviceID", "table" ],
+      "properties" : {
+        "deviceID" : {
+          "type" : "string"
+        },
+        "table" : {
+          "type" : "string"
+        },
+        "properties" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "database" : {
+          "type" : "string"
+        }
+      },
+      "title" : "GenericPlotRequest",
+      "example" : {
+        "deviceID" : "c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "table" : "raw_velocitypower_in_c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "properties" : [ "velocity", "power_in" ],
+        "database" : "predictive_maintenance"
+      }
+    }
+  }
+}

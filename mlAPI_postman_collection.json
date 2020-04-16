@@ -1,0 +1,87 @@
+{
+	"info": {
+		"_postman_id": "aaa5a419-0e68-4753-9e0e-a11c270fb4c4",
+		"name": "Machine Learning API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ML APIs",
+			"item": [
+				{
+					"name": "Generic Train",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"algorithm\" : \"OCSVM\",\n\t\"deviceID\": \"c3cedae8-6143-4421-84aa-32e527c6b04e\",\n\t\"properties\" : [\"velocity\", \"power_in\"],\n\t\"para\" : [0.01, 0.5], \n\t\"database\": \"predictive_maintenance\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/cloud/ml/generic/train/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"0",
+								"2",
+								"93"
+							],
+							"port": "5000",
+							"path": [
+								"cloud",
+								"ml",
+								"generic/train",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generic Predict",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"algorithm\" : \"OCSVM\",\n\t\"deviceID\": \"c3cedae8-6143-4421-84aa-32e527c6b04e\",\n\t\"properties\" : [\"velocity\", \"power_in\"],\n\t\"para\" : [0.01, 0.5], \n\t\"input\" : [31, 5], \n\t\"database\": \"predictive_maintenance\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/cloud/ml/generic/predict/",
+							"protocol": "http",
+							"host": [
+								"10",
+								"0",
+								"2",
+								"93"
+							],
+							"port": "5000",
+							"path": [
+								"cloud",
+								"ml",
+								"generic/predict",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	]
+}

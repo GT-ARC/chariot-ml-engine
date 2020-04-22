@@ -16,7 +16,6 @@ import MongoDBDriver
 import sys
 import pandas as pd
 import os
-import KMSInterfaceAPI
 
 # Global variables and arugument passing
 

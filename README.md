@@ -20,7 +20,8 @@ Run ``` deploy.sh```
 This will deploy `docker-compose.yaml` file with the services below:
 - mongo: with the credentials as given under docker-compose.yaml file
 - chariot-cloud: under `ml-db-api`. Note that it requires a Mongo DB to run. Update the credentials according to your mongo image and credentials.
-- swagger: under `swagger`. Note that it uses `mlcloud.json` for the documentation. It is also possible to deploy swagger separately: run `deploy_swaggerOnly.sh`.
+- swagger: under `swagger`. Note that it uses `mlcloud.json` for the documentation. It is also possible to deploy swagger separately: run `deploy_swaggerOnly.sh`. Swagger interface can be reached from http://localhost:4400/swagger/
+- The ChariotCloudAPI runs by default on localhost:5000. If you would like to change the host, `docker-compose.yaml` file line 6 has the port selection, and Dockerfile line 7 `ChariotCloudAPI` has the link parameter.
 
 ### Without Docker
 Python >= 3.5 should be installed. Python 2.x is not supported due to the usage of the open-source library Gaft.
@@ -36,7 +37,7 @@ Please see the `requirements.txt` file. Below are the list of some packages that
 * seaborn-0.9.1 (`pip3 install --user seaborn`)
 
 #### Running:
-- First, you need to initialize and run a mongo DB on your PC. If an example credentials would be: `username: mldb`, `pass: chariot`, `authentication database: admin`, `port: 27017`.
+- First, you need to initialize and run a mongo DB on your PC. An example credentials would be: `username: mldb`, `pass: chariot`, `authentication database: admin`, `port: 27017`.
 
 - In order to run the API, only ChariotCloudAPI.py is needed. To run:
 ```
@@ -44,7 +45,7 @@ Please see the `requirements.txt` file. Below are the list of some packages that
 # specify the link for RESTFul http access using -l option
 # by default (without any options), api runs on localhost
 # an example given that Mongo DB is initialized as above:
-python3 ChariotCloudAPI.py -port 27017 -u mldb -p chariot -db admin -H localhost
+python3 ChariotCloudAPI.py -port 27017 -u mldb -p chariot -db admin -l 0.0.0.0:5000
 ```
 
 ## Supported functionality:
@@ -61,8 +62,8 @@ A simple example of operation would be to first call `/cloud/db/CopyCSVToMLDB/` 
  '/cloud/ml/generic/train/'
 
 {
+    "deviceID" : "123456",              # Device ID. Any string. Make sure to comply with the same ID used in Database operations below
     "algorithm" : "OCSVM",              # Algorithm you want to use to train the data. Alternatively: KNN, KPCA
-    "deviceID" : "123456",                           # Device ID. Any string
 *   "idname": "deviceID"                # What do you call your ID. If not provided, it is "deviceID" by default.
     "para" :[0.01,0.5],                 # Parameters for ML algorithm
     "properties" : ["velocity","power_in"],           # What variables from the data you want for training
@@ -79,6 +80,7 @@ Returns status.
 '/cloud/ml/generic/predict/'
 
 {
+    "deviceID" : "123456",              # Device ID. Any string. Make sure to comply with the same ID used in Database operations below
     "algorithm" : "OCSVM",              # Algorithm you want to use to train the data.  Alternatively: KNN, KPCA
     "para" :[0.01,0.5],                 # Parameters used for training model that want to be used.
     "properties" : ["velocity","power_in"],           # The variables you already trained the data for.
@@ -88,7 +90,11 @@ Returns status.
 *   "database": "predictive_maintenance"          # If you want to save the results in the database.
 }
 
-Returns status and the prediction result (true or false) on the given value.
+Returns status and the prediction result (true or false) on the given value. Prediction result:
+{
+      "anomaly_detected" : True / False
+      "ml_result"        : 1.0 / -1.0 (not needed as it holds the same info as anomaly_detected)
+}
 
 ```
 
@@ -102,7 +108,7 @@ A Postman collection is also provided for an easy call interface for the service
 
 {
     "deviceID": "123456",
-    "path" : "<path_to_CSV_file_holding_source_data>",  # Make sure the first row of CSV file holds the variable names. An example file provided under /ml-mdb-api/app-docker/datafiles/real_motor_data_0320.csv
+    "path" : "<path_to_CSV_file_holding_source_data>",  # Make sure the first row of CSV file holds the variable names. An example file provided. /app/datafiles/real_motor_data_0320.csv
     "properties" : ["<variable-1>", "<variable-2>"],    # Make sure the variable names are the ones in CSV file. Use "velocity" and "power_in" for the example above.
   "database": "predictive_maintenance"    # Any database name put will be created!
 }
@@ -115,24 +121,8 @@ Returns process status
 ```
 '/cloud/db/getTableData/'
 {
-    "table": "GenericData",             # Name of the table where you want the data to get.
-*   "database": "ChariotCloud"          # If you want to get from a specific database. It is "ChariotCloud" by default.
-
-}
-
-Returns Table in JSON format.
-```
-
-* GetTableByID
-
-```
-'/cloud/db/getTableDataByID/'
-
-{
-    "table": "GenericData",             # Name of the table where you want the data to get.
-    "id" : 0,                           # Device ID. This is NOT a serial number of the data.
-*   "idname": "deviceID"                # What do you call your ID. If not provided, it is "ID" by default.
-*   "database": "ChariotCloud"          # If you want to get from a specific database. It is "ChariotCloud" by default.
+    "table": "raw_velocitypower_in_123456",             # Name of the table where you want the data to get.
+*   "database": "predictive_maintenance"          # If you want to get from a specific database. It is "predictive_maintenance" by default.
 
 }
 
@@ -144,10 +134,10 @@ Returns Table in JSON format.
 ```
 '/cloud/db/getLatestData/'
 {
-    "table": "GenericData",             # Name of the table where you want the data to get.
-    "id" : 0,                           # Device ID. This is NOT a serial number of the data.
-*   "idname": "deviceID"                # What do you call your ID. If not provided, it is "ID" by default.
-*   "database": "ChariotCloud"          # If you want to get from a specific database. It is "ChariotCloud" by default.
+    "table": "raw_velocitypower_in_123456",             # Name of the table where you want the data to get.
+    "idname"  : deviceID                          # ID, if used in the name of the table (deviceID in our case)
+    "deviceID" : 123456,                           # Device ID. This is NOT a serial number of the data.
+*   "database": "predictive_maintenance"          # If you want to get from a specific database. It is "ChariotCloud" by default.
 }
 
 Returns latest entry of the table in JSON format.
@@ -158,37 +148,13 @@ Returns latest entry of the table in JSON format.
 ```
 '/cloud/db/copyCSVInTable/'
 {
-    "table": "GenericData",              # Name of the table where you want the data to be stored.
-    "path" : "real_motor_data_0320.csv", # CSV file path
+    "table": "raw_velocitypower_in_123456",              # Name of the table where you want the data to be stored.
+    "path" : "./datafiles/real_motor_data_0320.csv", # CSV file path
     # NOTE: You either have to define header names in the csv, or give column_names in the request.
     "col" : ["deviceID" , "speed", "velocity",  "torque"],
-*   "database": "ChariotCloud"           # If you want to get from a specific database. It is "ChariotCloud" by default.
+*   "database": "predictive_maintenance"           # If you want to get from a specific database. It is "predictive_maintenance" by default.
 }
 
-Returns result.
-```
-
-* WriteInTable
-
-```
-'/cloud/db/writeInTable/'
-{
-    "table": "GenericData",              # Name of the table where you want the data to be stored.
-*   "database": "ChariotCloud"           # If you want to get from a specific database. It is "ChariotCloud" by default.
-    "data" : [                           # JSON array of records
-                {
-                    "name":"Blue","age":0
-
-                },
-                {
-                    "name":"Green","age":2
-
-                }
-            ]
-    # The data must be expressed as list of entries to be written, even if its a single record.
-    # If you want to directly add an entry without list, use WriteOneRowInTable API
-
-}
 Returns result.
 ```
 
@@ -197,14 +163,12 @@ Returns result.
 ```
 '/cloud/db/writeOneRowInTable/'
 {
-    "table": "GenericData",              # Name of the table where you want the data to be stored.
-*   "database": "ChariotCloud"           # If you want to get from a specific database. It is "ChariotCloud" by default.
+    "table": "raw_velocitypower_in_123456",              # Name of the table where you want the data to be stored.
+*   "database": "predictive_maintenance"           # If you want to get from a specific database. It is "predictive_maintenance" by default.
     "data":                              # Single JSON record of enrty to be added
             {
-                "deviceID": 0,
-                "torque" : 0,
-                "speed" : 34.2325,
-                "dist" : 1.1515
+                "velocity" : 34.2325,
+                "power_in" : 1.1515
             }
 }
 Returns result.
@@ -214,20 +178,17 @@ Returns result.
 * UpdateOneInTable
 
 ```
-'/cloud/db/uodateOneInTable/'
+'/cloud/db/updateOneInTable/'
 {
-    "table": "GenericData",              # Name of the table where you want the data to be updated.
-*   "database": "ChariotCloud"           # If you want to update from a specific database. It is "ChariotCloud" by default.
+    "table": "raw_velocitypower_in_123456",              # Name of the table where you want the data to be updated.
+*   "database": "predictive_maintenance"           # If you want to update from a specific database. It is "ChariotCloud" by default.
     "key":                               # You want to update entry having this values. If multiple key exist, first matching key will be updated.
             {
-                "deviceID": 0,
-                "speed" : 34.2325,
-                "dist" : 1.1515
+                "properties": "velocity"
             },
     "value":                             # Whatever part of the record you want to change
             {
-                "torque" : 60,
-                "dist" : 13513
+                "velocity" : 60
             }    
 }
 Returns result.
@@ -238,7 +199,7 @@ Returns result.
 ```
 '/cloud/db/deleteDatabase/'
 {
-   "database": "ChariotCloud"           # Name of the database to be deleted.
+   "database": "predictive_maintenance"           # Name of the database to be deleted.
 }
 Returns result.
 ```
@@ -248,8 +209,8 @@ Returns result.
 ```
 '/cloud/db/deleteTable/'
 {
-   "table": "GenericData"               # Name of the table to be deleted.
-*  "database": "ChariotCloud"           # If you want to delete from a specific database. It is "ChariotCloud" by default.
+   "table": "raw_velocitypower_in_123456"               # Name of the table to be deleted.
+*  "database": "predictive_maintenance"           # If you want to delete from a specific database. It is "predictive_maintenance" by default.
 
 }
 Returns result.

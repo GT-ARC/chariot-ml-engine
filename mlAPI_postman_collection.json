@@ -22,16 +22,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"algorithm\" : \"OCSVM\",\n\t\"deviceID\": \"c3cedae8-6143-4421-84aa-32e527c6b04e\",\n\t\"properties\" : [\"velocity\", \"power_in\"],\n\t\"para\" : [0.01, 0.5], \n\t\"database\": \"predictive_maintenance\"}"
+							"raw": "{\n\t\"algorithm\" : \"OCSVM\",\n\t\"deviceID\": \"123456\",\n\t\"properties\" : [\"velocity\", \"power_in\"],\n\t\"para\" : [0.01, 0.5], \n\t\"database\": \"predictive_maintenance\"}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/cloud/ml/generic/train/",
+							"raw": "http://localhost:5000/cloud/ml/generic/train/",
 							"protocol": "http",
 							"host": [
-								"10",
-								"0",
-								"2",
-								"93"
+								"localhost"
 							],
 							"port": "5000",
 							"path": [
@@ -58,16 +55,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"algorithm\" : \"OCSVM\",\n\t\"deviceID\": \"c3cedae8-6143-4421-84aa-32e527c6b04e\",\n\t\"properties\" : [\"velocity\", \"power_in\"],\n\t\"para\" : [0.01, 0.5], \n\t\"input\" : [31, 5], \n\t\"database\": \"predictive_maintenance\"}"
+							"raw": "{\n\t\"algorithm\" : \"OCSVM\",\n\t\"deviceID\": \"123456\",\n\t\"properties\" : [\"velocity\", \"power_in\"],\n\t\"para\" : [0.01, 0.5], \n\t\"input\" : [31, 5], \n\t\"database\": \"predictive_maintenance\"}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/cloud/ml/generic/predict/",
+							"raw": "http://localhost:5000/cloud/ml/generic/predict/",
 							"protocol": "http",
 							"host": [
-								"10",
-								"0",
-								"2",
-								"93"
+								"localhost"
 							],
 							"port": "5000",
 							"path": [

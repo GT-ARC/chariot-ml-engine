@@ -19,15 +19,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"database\": \"predictive_maintenance\",\n\t\"path\": \"<path_to_source_data_in_CSV>\",\n\t\"properties\": [\"velocity\", \"power_in\"]\n}"
+					"raw": "{\n\t\"deviceID\": \"123456\",\n\t\"database\": \"predictive_maintenance\",\n\t\"path\": \"./datafiles/real_motor_data_0320.csv\",\n\t\"properties\": [\"velocity\", \"power_in\"]\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/cloud/db/CopyCSVToMLDB/",
+					"raw": "http://localhost:5000/cloud/db/CopyCSVToMLDB/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "5000",
 					"path": [
 						"cloud",
 						"db",
@@ -52,15 +52,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"table\" : \"GenericData\",\n\t\"database\": \"ChariotCloud\",\n\t\"data\": \n\t\t\t{\n\t\t\t\t\"deviceID\": 0,\n\t\t\t\t\"torque\" : 0,\n\t\t\t\t\"speed\" : 34.2325,\n\t\t\t\t\"dist\" : 1.1515\n\t\t\t}\n}"
+					"raw": "{\n\t\"table\" : \"raw_velocitypower_in_123456\",\n\t\"database\": \"predictive_maintenance\",\n\t\"data\": \n\t\t\t{\n\t\t\t\t\"velocity\" : 34.2325,\n\t\t\t\t\"power_in\" : 1.1515\n\t\t\t}\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/cloud/db/writeOneRowInTable/",
+					"raw": "http://localhost:5000/cloud/db/writeOneRowInTable/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "5000",
 					"path": [
 						"cloud",
 						"db",
@@ -88,55 +88,19 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"table\": \"OCSVM_model_0\",    \n\t\"database\": \"ChariotCloud\"\n}"
+					"raw": "{\n\t\"deviceID\": \"123456\",\n\t\"table\": \"raw_velocitypower_in_123456\",    \n\t\"database\": \"predictive_maintenance\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/cloud/db/getTableData/",
+					"raw": "http://localhost:5000/cloud/db/getTableData/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "5000",
 					"path": [
 						"cloud",
 						"db",
 						"getTableData",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetTableDataByID",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"table\": \"OCSVM_model_0\",\n\t\"id\":0,\n\t\"idname\" : \"deviceID\",\n\t\"database\": \"ChariotCloud\"\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8080/cloud/db/getTableDataByID/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"cloud",
-						"db",
-						"getTableDataByID",
 						""
 					]
 				}
@@ -160,15 +124,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"table\": \"OCSVM_model_0\",    \n\t\"database\": \"ChariotCloud\",\n\t\"id\":0,\n\t\"idname\" : \"deviceID\"\n\t\n}"
+					"raw": "{\n\t\"table\": \"raw_velocitypower_in_123456\",    \n\t\"database\": \"predictive_maintenance\",\n\t\"deviceID\": \"123456\",\n\t\"idname\" : \"deviceID\"\n\t\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/cloud/db/getLatestData/",
+					"raw": "http://localhost:5000/cloud/db/getLatestData/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "5000",
 					"path": [
 						"cloud",
 						"db",
@@ -193,19 +157,52 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"table\": \"GenericData\",\n\t\"database\": \"ChariotCloud\"\n}"
+					"raw": "{\n\t\"table\": \"raw_velocitypower_in_123456\",\n\t\"database\": \"predictive_maintenance\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/cloud/db/deleteTable/",
+					"raw": "http://localhost:5000/cloud/db/deleteTable/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "5000",
 					"path": [
 						"cloud",
 						"db",
 						"deleteTable",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteDatabase",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"database\": \"predictive_maintenance\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/cloud/db/deleteDatabase/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"cloud",
+						"db",
+						"deleteDatabase",
 						""
 					]
 				}
@@ -226,15 +223,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"table\": \"GenericData\",\n\t\"path\" : \"real_motor_data_0320.csv\"\n}"
+					"raw": "{\n\t\"deviceID\": \"123456\",\n\t\"table\": \"raw_velocitypower_in_123456\",\n\t\"path\" : \"./datafiles/real_motor_data_0320.csv\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/cloud/db/copyCSVInTable/",
+					"raw": "http://localhost:5000/cloud/db/copyCSVInTable/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "5000",
 					"path": [
 						"cloud",
 						"db",
@@ -259,15 +256,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"table\" : \"OCSVM_model_0\",\n\t\"database\": \"ChariotCloud\",\n\t\"key\": \n\t\t{\n\t\t\t\t\"algorithm\": \"OCSVM\"\n\t\t\t},\n\t\"value\":\n\t{\n\t\t\"table\" :\"NewTable\"\n\n\t}\n\t\t\n}"
+					"raw": "{\n\t\"table\" : \"raw_velocitypower_in_123456\",\n\t\"database\": \"predictive_maintenance\",\n\t\"key\": \n\t\t{\n\t\t\t\t\"properties\": \"velocity\"\n\t\t\t},\n\t\"value\":\n\t{\n\t\t\"velocity\" :60\n\n\t}\n\t\t\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/cloud/db/updateOneInTable/",
+					"raw": "http://localhost:5000/cloud/db/updateOneInTable/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "5000",
 					"path": [
 						"cloud",
 						"db",

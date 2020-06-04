@@ -106,21 +106,21 @@ class GenericTrain(object):
             # Creating query in python dict
             req = {
                 'table': table,
-                'database': database,
-                'deviceID': deviceID
+                'database': database
             }
 
             # This is commented out as csv has all the IDs 0. So for now, just get the data using table name.
-            # data_response = requests.post(link + '/cloud/db/getTableDataByID/', data=json.dumps(req))
+            # data_response = requests.get(link + '/cloud/db/getTableDataByID/', data=json.dumps(req))
 
-            data_response = requests.post(link + '/cloud/db/getTableData/', data=json.dumps(req))
+            data_response = requests.get(link + '/cloud/db/getTableData/', data=json.dumps(req))
             data_response = data_response.json()  # We get data in string, convert in json/dict.
             data_response = pd.DataFrame(data_response)  # Convert to pandas df
             data = data_response[result["properties"]]  # Select columns matching the request
 
         except Exception as e:
-            print(e)
-            return "Error in fetching data from the database"
+            print("Error in fetching data from the database: " + str(e))
+            #web.internalerror()
+            return e
 
         # Train model
         try:
@@ -206,7 +206,7 @@ class GenericPredict(object):
 
     def __init__(self):
         global pm_result_list
-        self.moving_aver_size = 20
+        self.moving_aver_size = 1
         self.pm_weight = 0.4
 
     def POST(self):
@@ -294,11 +294,10 @@ class GenericPredict(object):
                         #
                         req = {
                             'database': database,
-                            'table': dataTable,
-                            'deviceID': deviceID
+                            'table': dataTable
                         }
 
-                        data_response = requests.post(link + '/cloud/db/getTableData/', data=json.dumps(req))
+                        data_response = requests.get(link + '/cloud/db/getTableData/', data=json.dumps(req))
                         data_response = data_response.json()  # We get data in string, convert in json/dict.
                         data_response = pd.DataFrame(data_response)  # Convert to pandas df
                         data = data_response[result["properties"]]  # Select columns matching the request
@@ -344,7 +343,7 @@ class GenericPredict(object):
                 pickledDict = {}
 
                 print("Requesting Model")
-                all_model = requests.post(link + '/cloud/db/getTableDataByID/', data=json.dumps(payload))
+                all_model = requests.get(link + '/cloud/db/getTableDataByID/', data=json.dumps(payload))
                 all_model = all_model.json()
                 if "modelID" in result:
                     modelID = result["modelID"]
@@ -382,8 +381,8 @@ class GenericPredict(object):
                     result = model.predict(pickledDict['clf'], pickledDict['scaler'], pickledDict['in_var'], data)
 
             # Result Modifications
-            pm_result = float(result[0])
-            pm_needed = self.moving_average_pm(pm_result)
+            ml_result = float(result[0])
+            anomaly_detected = self.moving_average_pm(ml_result)
 
         except Exception as e:
             err = "Error occurred while predicting: " + str(e)
@@ -402,7 +401,7 @@ class GenericPredict(object):
                     for c in cols:
                         rlt[c] = inputs[i]
                         i += 1
-                    rlt['result'] = int(pm_needed)
+                    rlt['result'] = int(anomaly_detected)
                     rlt[str(idname)] = deviceID
                     payload["data"] = rlt
                     payload["id"] = deviceID
@@ -410,11 +409,11 @@ class GenericPredict(object):
 
                     res = requests.post(link + '/cloud/db/writeOneRowInTable/', data=json.dumps(payload))
 
-                    print('Result Saved in %s , PM is: %s' % (payload["table"], pm_needed))
+                    print('Result Saved in %s , PM is: %s' % (payload["table"], anomaly_detected))
                     result_load = {}
-                    result_load["pm_needed"] = int(pm_needed)
-                    result_load["pm_result"] = pm_result
-                    #result_load = [pm_needed, pm_result]
+                    result_load["anomaly_detected"] = int(anomaly_detected)
+                    result_load["ml_result"] = ml_result
+                    #result_load = [anomaly_detected, ml_result]
                     json_result = json.dumps(result_load)
                     return json_result
 
@@ -442,7 +441,7 @@ class GenericPredict(object):
 
             else:
                 result_load = {}
-                result_load = [pm_needed, pm_result]
+                result_load = [anomaly_detected, ml_result]
                 json_result = json.dumps(result_load)
                 return json_result
 
@@ -451,8 +450,18 @@ class GenericPredict(object):
             print(err)
             return err
 
+    # Moving average function to smooth the recognition process and avoid noises and false positives/negatives
+    # The function is currently disabled by setting self.moving_aver_size to '1'. Set it back to a value to activate
     def moving_average_pm(self, curr_result):
         global pm_result_list
+        # by default this is set to 1. Skipping the averaging.
+        if self.moving_aver_size == 1:
+            if curr_result == 1.0:
+                anomaly_detected = False
+            else:
+                anomaly_detected = True
+            return anomaly_detected
+
         if curr_result == 1.0:
             # self.result_list.append(1)
             pm_result_list.append(1)
@@ -460,7 +469,7 @@ class GenericPredict(object):
             # self.result_list.append(0)
             pm_result_list.append(0)
 
-        # calculate the last 10 result for a moving average
+        # calculate the last X result for a moving average
         if len(pm_result_list) == self.moving_aver_size:
             # temp = np.array(self.result_list)
             temp = np.array(pm_result_list)
@@ -468,13 +477,13 @@ class GenericPredict(object):
             # self.result_list.pop(0)
             pm_result_list.pop(0)
             if result_avg < self.pm_weight:
-                pm_needed = True
+                anomaly_detected = True
             else:
-                pm_needed = False
+                anomaly_detected = False
         else:
-            pm_needed = False
+            anomaly_detected = False
 
-        return pm_needed
+        return anomaly_detected
 
 
 class GenericPlot(object):
@@ -533,10 +542,10 @@ class GenericPlot(object):
             }
 
             # This is commented out as csv has all the IDs 0. So for now, just get the data using table name.
-            # data_response = requests.post(link + '/cloud/db/getTableDataByID/', data=json.dumps(req))
+            # data_response = requests.get(link + '/cloud/db/getTableDataByID/', data=json.dumps(req))
 
 
-            data_response = requests.post(link + '/cloud/db/getTableData/', data=json.dumps(req))
+            data_response = requests.get(link + '/cloud/db/getTableData/', data=json.dumps(req))
             data_response = data_response.json()  # We get data in string, convert in json/dict.
             data_response = pd.DataFrame(data_response)  # Convert to pandas df
             # data = data_response[result["properties"]]  # Select columns matching the request

@@ -103,32 +103,6 @@
         "deprecated" : false
       }
     },
-    "/db/getTableDataByID" : {
-      "get" : {
-        "tags" : [ "MLDB" ],
-        "summary" : "Gets a table data by table ID under ML DB",
-        "description" : "Gets data from a table / collection. By ID. Returns data if found, otherwise, none.",
-        "operationId" : "get_table_data_by_id",
-        "produces" : [ "text/plain" ],
-        "parameters" : [ {
-          "name" : "Content_Type",
-          "in" : "header",
-          "description" : "",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "headers" : { },
-            "schema" : {
-              "type" : "string"
-            }
-          }
-        },
-        "deprecated" : false
-      }
-    },
     "/db/getLatestData" : {
       "get" : {
         "tags" : [ "MLDB" ],
@@ -350,13 +324,11 @@
       },
       "title" : "WriteOneRowInTableRequest",
       "example" : {
-        "table" : "GenericData",
-        "database" : "ChariotCloud",
+        "table" : "raw_velocitypower_in_123456",
+        "database" : "predictive_maintenance",
         "data" : {
-          "deviceID" : 0,
-          "torque" : 0,
-          "speed" : 34.2325,
-          "dist" : 1.1515
+          "velocity" : 34.2325,
+          "power_in" : 1.1515
         }
       }
     },
@@ -365,8 +337,7 @@
       "required" : [ "deviceID", "dist", "speed", "torque" ],
       "properties" : {
         "deviceID" : {
-          "type" : "integer",
-          "format" : "int32"
+          "type" : "string"
         },
         "torque" : {
           "type" : "integer",
@@ -383,7 +354,7 @@
       },
       "title" : "Data",
       "example" : {
-        "deviceID" : 0,
+        "deviceID" : "123456",
         "torque" : 0,
         "speed" : 34.2325,
         "dist" : 1.1515
@@ -402,8 +373,8 @@
       },
       "title" : "DeleteTableRequest",
       "example" : {
-        "table" : "GenericData",
-        "database" : "ChariotCloud"
+        "table" : "raw_velocitypower_in_123456",
+        "database" : "predictive_maintenance"
       }
     },
     "CopyCSVInTableRequest" : {
@@ -419,8 +390,8 @@
       },
       "title" : "CopyCSVInTableRequest",
       "example" : {
-        "table" : "GenericData",
-        "path" : "/app/datafiles/real_motor_data_0320.csv"
+        "table" : "raw_velocitypower_in_123456",
+        "path" : "./datafiles/real_motor_data_0320.csv"
       }
     },
     "CopyCSVToMLDBRequest" : {
@@ -442,10 +413,10 @@
       },
       "title" : "CopyCSVToMLDBRequest",
       "example" : {
-        "deviceID": "c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "deviceID": "123456",
         "properties" : [ "velocity", "power_in"  ],
         "database" : ["predictive_maintenance"],
-        "path": "/app/datafiles/real_motor_data_0320.csv"
+        "path": "./datafiles/real_motor_data_0320.csv"
       }
     },
     "UpdateOneInTableRequest" : {
@@ -467,13 +438,13 @@
       },
       "title" : "UpdateOneInTableRequest",
       "example" : {
-        "table" : "OCSVM_model_0",
-        "database" : "ChariotCloud",
+        "table" : "raw_velocitypower_in_123456",
+        "database" : "predictive_maintenance",
         "key" : {
-          "algorithm" : "OCSVM"
+          "properties" : "velocity"
         },
         "value" : {
-          "table" : "NewTable"
+          "velocity" : 60
         }
       }
     },
@@ -533,7 +504,7 @@
       "title" : "GenericTrainRequest",
       "example" : {
         "algorithm" : "OCSVM",
-        "deviceID" : "c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "deviceID" : "123456",
         "para" : [ 0.01, 0.5 ],
         "properties" : [ "velocity", "power_in" ],
         "database" : "predictive_maintenance"
@@ -576,7 +547,7 @@
       "title" : "GenericPredictRequest",
       "example" : {
         "algorithm" : "OCSVM",
-        "deviceID" : "c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "deviceID" : "123456",
         "properties" : [ "velocity", "power_in" ],
         "input" : [ 31, 5 ],
         "para" : [ 0.01, 0.5 ],
@@ -605,8 +576,8 @@
       },
       "title" : "GenericPlotRequest",
       "example" : {
-        "deviceID" : "c3cedae8-6143-4421-84aa-32e527c6b04e",
-        "table" : "raw_velocitypower_in_c3cedae8-6143-4421-84aa-32e527c6b04e",
+        "deviceID" : "123456",
+        "table" : "raw_velocitypower_in_123456",
         "properties" : [ "velocity", "power_in" ],
         "database" : "predictive_maintenance"
       }

@@ -48,7 +48,7 @@ if host is None:
 
 authdb = args.authdb
 if authdb is None:
-    authdb = "ml"
+    authdb = "admin"
 
 monogdbport = args.mongodbport
 if monogdbport is None:
@@ -136,7 +136,7 @@ class GetTableData(object):
     @contact: s.gokhale@campus.tu-berlin.de
     """
 
-    def POST(self):
+    def GET(self):
         """
         Get Table / Collection from given table name
 
@@ -180,7 +180,6 @@ class GetTableData(object):
             print("GetTableData Finished")
             print("-----------------------------------")
 
-
 class GetTableDataByID(object):
     """
     Gets data from a table / collection. By ID. Returns data if found, otherwise, none.
@@ -190,7 +189,7 @@ class GetTableDataByID(object):
     @contact: s.gokhale@campus.tu-berlin.de
     """
 
-    def POST(self):
+    def GET(self):
         """
         Get Table / Collection from given table name
 
@@ -248,7 +247,6 @@ class GetTableDataByID(object):
             print("GetTableDataByID Finished")
             print("-----------------------------------")
 
-
 class GetLatestData(object):
     """
     Gets latest data in the table
@@ -257,7 +255,7 @@ class GetLatestData(object):
     @contact: s.gokhale@campus.tu-berlin.de
     """
 
-    def POST(self):
+    def GET(self):
         """
         GET Function
         @type web: string
@@ -277,14 +275,6 @@ class GetLatestData(object):
         else:
             database = "predictive_maintenance"
 
-        # If user has a specific naming system for ID.
-        if "idname" in result:
-            idname = result["idname"]
-        else:
-            idname = "ID"
-
-        id = result["id"]
-
         try:
             # Create Object
             mdbobject = makeObject(dbName = database,dbCollection = table)
@@ -292,11 +282,10 @@ class GetLatestData(object):
             if mdbobject.checkCollectionExists() == False:
                 return "Unknown / empty Collection"
 
-            query = {}
-            query[idname] = int(id)
+            maskquery = {'_id' :0}
 
-            # Returns a list of all entries where id is given
-            res = mdbobject.findLatestRecord(query)
+            # Returns the latest recorded data
+            res = mdbobject.findLatestRecord(maskingquery=maskquery)
 
             if(res == None):
                 return "No Data found"

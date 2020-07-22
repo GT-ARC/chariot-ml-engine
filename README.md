@@ -1,4 +1,4 @@
-Machine Learning Component with API for Generic ML Algorithms
+Machine Learning Engine for IoT
 ============
 Version 1.0, uploaded on 16.04.2020 as an open source project
 - Orhan Can Görür (orhan-can.goeruer@dai-labor.de)

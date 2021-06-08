@@ -6,6 +6,8 @@ Version 1.0, uploaded on 16.04.2020 as an open source project
 - Xin Yu (marvelous.islander@gmail.com)
 - Fikret Sivrikaya (fikret.sivrikaya@gt-arc.com)
 
+Please refer to the [Credits](#credits) section for any intended use of this code.
+
 Below are the instructions to successfully install and run the ML component and its API both for accessing generic ML functionalities provided for CHARIOT and accessing the MongoDB database.
 This API supports various MongoDB operations and several machine learning based algorithms (mostly for generic predictive maintenance operation for the project). We would like to also acknowledge the contributions of the students in this project: Peng Qian (qian peng1994@campus.tu-berlin.de), Stefan Klemencic (stefan.klemencic@campus.tu-berlin.de), Simon Torka, Antonia Düker.
 
@@ -233,7 +235,7 @@ Returns result.
 ## Existing Issues
 1. The new ChariotCloudAPI.py and MachineLearningAPI.py might cause the malfunction of some files, for example, quality_prediction.py, etc.
 
-## References
+## Credits
 In any use of this code, please let the author know and please cite the article below:
 - Görür, O.C.; Yu, X.; Sivrikaya, F. Integrating Predictive Maintenance in Adaptive Process Scheduling for a Safe and Efficient Industrial Process. Appl. Sci. 2021, 11, 5042. https://doi.org/10.3390/app11115042
 

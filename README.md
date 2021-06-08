@@ -232,3 +232,9 @@ Returns result.
 
 ## Existing Issues
 1. The new ChariotCloudAPI.py and MachineLearningAPI.py might cause the malfunction of some files, for example, quality_prediction.py, etc.
+
+## References
+In any use of this code, please let the author know and please cite the article below:
+- Görür, O.C.; Yu, X.; Sivrikaya, F. Integrating Predictive Maintenance in Adaptive Process Scheduling for a Safe and Efficient Industrial Process. Appl. Sci. 2021, 11, 5042. https://doi.org/10.3390/app11115042
+
+

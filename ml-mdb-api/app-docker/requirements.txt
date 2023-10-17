@@ -5,7 +5,7 @@ cycler==0.10.0
 db==0.1.1
 future==0.17.1
 idna==2.8
-joblib==0.13.2
+joblib==1.2.0
 jsonlib-python3==1.6.1
 jsonpickle==1.2
 kiwisolver==1.1.0

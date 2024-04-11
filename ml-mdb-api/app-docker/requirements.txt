@@ -4,7 +4,7 @@ chardet==3.0.4
 cycler==0.10.0
 db==0.1.1
 future==0.18.3
-idna==2.8
+idna==3.7
 joblib==1.2.0
 jsonlib-python3==1.6.1
 jsonpickle==1.2
